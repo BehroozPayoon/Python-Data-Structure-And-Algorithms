@@ -86,7 +86,6 @@ def final_answer(cards, query):
 
 
 # Question: Given an array of integers nums sorted in ascending order, find the starting ending and position of a given number
-
 def locate_positions(nums, target):
     first_position = locate_first_position(nums, target)
     last_position = locate_last_position(nums, target)
@@ -115,3 +114,58 @@ def locate_last_position(nums, target):
             return 'right'
         return 'left'
     return binary_search(0, len(nums) - 1, condition)
+
+# Problem - Rotated Lists
+
+# We'll solve the following problem step-by-step:
+# You are given list of numbers, obtained by rotating a sorted list an unknown number of times. Write a function to determine the minimum number of times the original sorted list was rotated to obtain the given list. Your function should have the worst-case complexity of `O(log N)`, where N is the length of the list. You can assume that all the numbers in the list are unique.
+# Example: The list `[5, 6, 9, 0, 2, 3, 4]` was obtained by rotating the sorted list `[0, 2, 3, 4, 5, 6, 9]` 3 times.
+# We define "rotating a list" as removing the last element of the list and adding it before the first element. E.g. rotating the list `[3, 2, 4, 1]` produces `[1, 3, 2, 4]`.
+# "Sorted list" refers to a list where the elements are arranged in the increasing order  e.g. `[1, 3, 5, 7]`.
+
+
+# Linear => O(N)
+def count_rotation_linear(nums):
+    if len(nums) <= 1:
+        return 0
+    position = 1
+    while position < len(nums):
+        if position > 0 and nums[position] < nums[position - 1]:
+            return position
+
+        position += 1
+
+    return 0
+
+
+def count_rotation(nums):
+    if len(nums) <= 1:
+        return 0
+
+    low = 0
+    high = len(nums) - 1
+    length = len(nums)
+
+    if nums[high] > nums[low]:
+        return 0
+
+    if nums[high] < nums[high - 1]:
+        return high
+
+    if nums[low + 1] < nums[low]:
+        return 1
+
+    while low <= high:
+        mid = low + (high-low) // 2
+        prev = (mid-1+length) % length
+        nex = (mid+1) % length
+        if nums[mid] < nums[prev] and nums[mid] <= nums[nex]:
+            return mid
+        elif nums[mid] < nums[low]:
+            high = mid-1
+        elif nums[mid] > nums[high]:
+            low = mid+1
+        else:
+            return 0
+
+    return 0
